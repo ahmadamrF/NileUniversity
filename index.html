@@ -134,11 +134,11 @@
 <sc-if value="{{ mine.hasAction }}" hint-placeholder-val="{{ false }}">
 <div style="border:2px solid var(--color-accent);padding:18px 20px;display:flex;align-items:center;gap:20px;background:#fff;margin-bottom:22px">
 <div style="flex:1"><div style="font-family:var(--font-heading);font-weight:800;font-size:17px;margin-bottom:4px">{{ mine.actionTitle }}</div><div class="text-muted" style="font-size:12.5px">{{ mine.actionNote }}</div></div>
-<button class="btn btn-primary">{{ mine.actionBtn }}</button>
+<button class="btn btn-primary" onClick="{{ mine.onAction }}">{{ mine.actionBtn }}</button>
 </div>
 </sc-if>
-<div style="display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--color-divider);background:#fff;margin-bottom:22px">
-<sc-for list="{{ mine.stats }}" as="s" hint-placeholder-count="4"><div style="padding:16px 18px;border-right:1px solid var(--color-divider)"><div style="font-size:11.5px;color:var(--color-neutral-700);margin-bottom:9px">{{ s.label }}</div><div style="font-family:var(--font-heading);font-weight:800;font-size:25px;line-height:1">{{ s.value }}</div><div style="font-size:11px;color:var(--color-neutral-600);margin-top:6px">{{ s.note }}</div></div></sc-for>
+<div style="display:flex;width:fit-content;border:1px solid var(--color-divider);background:#fff;margin-bottom:22px">
+<sc-for list="{{ mine.facts }}" as="f" hint-placeholder-count="2"><div style="padding:13px 18px;border-right:1px solid var(--color-divider)"><span style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600);margin-right:10px">{{ f.label }}</span><span style="font-family:var(--font-heading);font-weight:800;font-size:14px">{{ f.value }}</span></div></sc-for>
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--color-divider);background:#fff">
 <div style="border-right:1px solid var(--color-divider)">
@@ -195,8 +195,8 @@
 <div style="display:flex;gap:8px;flex:none"><button class="btn btn-secondary">Export summary</button><button class="btn btn-primary" onClick="{{ goCases }}" style="padding:9px 15px">Open work queue</button></div>
 </div>
 <div class="hr" style="margin:22px 0 0"></div>
-<div style="display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--color-divider);background:#fff">
-<sc-for list="{{ metrics }}" as="m" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:{{ metricCols }};border-bottom:1px solid var(--color-divider);background:#fff">
+<sc-for list="{{ metrics }}" as="m" hint-placeholder-count="3">
 <div style="padding:18px 20px 20px;border-right:1px solid var(--color-divider)">
 <div style="font-size:11.5px;color:var(--color-neutral-700);margin-bottom:12px">{{ m.label }}</div>
 <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:var(--font-heading);font-weight:800;font-size:31px;line-height:1;letter-spacing:-.02em">{{ m.value }}</span><span style="font-size:11.5px;font-family:var(--font-heading);font-weight:800;color:var(--color-accent-700)">{{ m.delta }}</span></div>
@@ -204,7 +204,7 @@
 </div>
 </sc-for>
 </div>
-<sc-if value="{{ showJourney }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ showJourney }}" hint-placeholder-val="{{ false }}">
 <div style="padding:22px 0 0">
 <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px"><h4 style="margin:0">Student journey overview</h4><span class="text-muted" style="font-size:12px">2025/26 intake · all faculties</span></div>
 <div style="display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--color-divider);background:#fff">
@@ -219,8 +219,8 @@
 </div>
 </div>
 </sc-if>
-<div style="display:grid;grid-template-columns:1.25fr .75fr;border:1px solid var(--color-divider);border-top:none;margin-top:22px;background:#fff">
-<div style="border-right:1px solid var(--color-divider)">
+<div style="display:grid;grid-template-columns:{{ dash.cols }};border:1px solid var(--color-divider);border-top:none;margin-top:22px;background:#fff">
+<div style="border-right:{{ dash.rule }}">
 <div style="padding:16px 20px 14px;display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--color-divider)"><h4 style="margin:0">Work to complete</h4><button class="btn btn-ghost" onClick="{{ goCases }}">View all →</button></div>
 <sc-for list="{{ work }}" as="w" hint-placeholder-count="4">
 <div onClick="{{ w.onClick }}" style="display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--color-divider);cursor:pointer" style-hover="background:var(--color-accent-100)">
@@ -239,6 +239,7 @@
 </sc-for>
 </div>
 </div>
+<sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
 <div>
 <div style="padding:16px 20px 14px;border-bottom:2px solid var(--color-divider);display:flex;align-items:baseline;justify-content:space-between"><h4 style="margin:0">Performance</h4><span class="text-muted" style="font-size:11.5px">6 weeks</span></div>
 <div style="padding:16px 20px 20px;border-bottom:1px solid var(--color-divider)">
@@ -438,13 +439,17 @@
 <h6 style="color:var(--color-accent-700);margin:0 0 10px">Accommodation service</h6>
 <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
 <div><h1 style="margin:0 0 8px;font-size:34px">Accommodation</h1><p class="text-muted" style="font-size:13.5px;margin:0;max-width:620px">2025/26 allocation round · 1,904 beds across four halls. Contracts and payments sit on the same student record the academic side uses.</p></div>
-<div style="display:flex;gap:8px;flex:none"><button class="btn btn-secondary">Allocation rules</button><button class="btn btn-primary">Run allocation</button></div>
+<sc-if value="{{ canSearch }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;flex:none"><button class="btn btn-secondary">Allocation rules</button><button class="btn btn-primary">Run allocation</button></div></sc-if>
+<sc-if value="{{ isStudentSide }}" hint-placeholder-val="{{ false }}"><div style="flex:none"><button class="btn btn-primary" onClick="{{ goAccomReq }}">Submit an accommodation request</button></div></sc-if>
 </div>
 <div class="hr" style="margin:20px 0 0"></div>
+<sc-if value="{{ canSearch }}" hint-placeholder-val="{{ false }}">
 <div style="display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--color-divider);background:#fff">
 <sc-for list="{{ accomStats }}" as="a" hint-placeholder-count="4"><div style="padding:16px 18px 18px;border-right:1px solid var(--color-divider)"><div style="font-size:11px;color:var(--color-neutral-700);margin-bottom:10px">{{ a.label }}</div><div style="font-family:var(--font-heading);font-weight:800;font-size:26px;line-height:1">{{ a.value }}</div><div style="font-size:11px;color:var(--color-neutral-600);margin-top:7px">{{ a.note }}</div></div></sc-for>
 </div>
-<div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--color-divider);border-top:none;background:#fff">
+</sc-if>
+<div style="display:grid;grid-template-columns:{{ accomCols }};border:1px solid var(--color-divider);background:#fff;margin-top:0">
+<sc-if value="{{ canSearch }}" hint-placeholder-val="{{ false }}">
 <div style="border-right:1px solid var(--color-divider)">
 <div style="padding:16px 20px;border-bottom:2px solid var(--color-divider)"><h4 style="margin:0">Occupancy by hall</h4></div>
 <div style="padding:18px 20px 20px">
@@ -457,6 +462,7 @@
 </sc-for>
 </div>
 </div>
+</sc-if>
 <div>
 <div style="padding:16px 20px;border-bottom:2px solid var(--color-divider)"><h4 style="margin:0">{{ accomJourneyTitle }}</h4></div>
 <sc-for list="{{ accomJourney }}" as="j" hint-placeholder-count="5">
@@ -523,10 +529,12 @@
 <sc-if value="{{ canSearch }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;flex:none"><button class="btn btn-secondary">{{ gen.action2 }}</button><button class="btn btn-primary">{{ gen.action1 }}</button></div></sc-if>
 </div>
 <div class="hr" style="margin:20px 0 0"></div>
+<sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
 <div style="display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--color-divider);background:#fff">
 <sc-for list="{{ gen.stats }}" as="s" hint-placeholder-count="4"><div style="padding:16px 20px 18px;border-right:1px solid var(--color-divider)"><div style="font-size:11.5px;color:var(--color-neutral-700);margin-bottom:10px">{{ s.label }}</div><div style="font-family:var(--font-heading);font-weight:800;font-size:26px;line-height:1">{{ s.value }}</div><div style="font-size:11px;color:var(--color-neutral-600);margin-top:7px">{{ s.note }}</div></div></sc-for>
 </div>
-<div style="display:grid;grid-template-columns:1.4fr .6fr;border:1px solid var(--color-divider);border-top:none;background:#fff">
+</sc-if>
+<div style="display:grid;grid-template-columns:1.4fr .6fr;border:1px solid var(--color-divider);background:#fff;margin-top:0">
 <div style="border-right:1px solid var(--color-divider)">
 <div style="padding:16px 20px;border-bottom:2px solid var(--color-divider);display:flex;align-items:baseline;justify-content:space-between"><h4 style="margin:0">{{ gen.tableTitle }}</h4><span class="text-muted" style="font-size:12px">{{ gen.tableNote }}</span></div>
 <div>
@@ -545,7 +553,123 @@
 </div>
 </sc-if>
 
+<sc-if value="{{ isModules }}" hint-placeholder-val="{{ false }}">
+<div style="padding:26px 28px 44px;max-width:1180px">
+<button class="btn btn-ghost" onClick="{{ goMine }}" style="margin-bottom:14px">← Back to my overview</button>
+<h6 style="color:var(--color-accent-700);margin:0 0 10px">Semester 2 · 2025/26</h6>
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+<div><h1 style="margin:0 0 8px;font-size:34px">Choose your modules</h1><p class="text-muted" style="font-size:13.5px;margin:0;max-width:620px">Core modules are already assigned. Select two optional modules to reach 100 credits, then submit for your academic adviser to confirm.</p></div>
+<div style="flex:none;border:2px solid {{ mod.creditBd }};padding:12px 18px;text-align:left"><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600);margin-bottom:5px">Credits selected</div><div style="font-family:var(--font-heading);font-weight:800;font-size:24px;color:{{ mod.creditFg }}">{{ mod.credits }} / 100</div></div>
+</div>
+<div class="hr" style="margin:20px 0 0"></div>
+<sc-if value="{{ mod.submitted }}" hint-placeholder-val="{{ false }}">
+<div style="border:2px solid var(--color-accent);background:var(--color-accent-100);padding:16px 20px;margin-bottom:22px;font-size:13.5px;color:var(--color-accent-800)">Submitted for confirmation. Your adviser has five working days to approve; the request appears in My requests as a case.</div>
+</sc-if>
+<div style="border:1px solid var(--color-divider);background:#fff;margin-bottom:22px">
+<div style="padding:15px 20px;border-bottom:2px solid var(--color-divider)"><h4 style="margin:0">Core modules — automatically assigned</h4></div>
+<sc-for list="{{ mod.core }}" as="m" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid var(--color-divider)">
+<span style="width:80px;flex:none;font-family:var(--font-heading);font-weight:800;font-size:12.5px;color:var(--color-neutral-700)">{{ m.code }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-family:var(--font-heading);font-weight:800;font-size:14px">{{ m.title }}</span><span style="display:block;font-size:11.5px;color:var(--color-neutral-600);margin-top:2px">{{ m.staff }} · {{ m.slot }}</span></span>
+<span style="width:70px;flex:none;font-size:12.5px;color:var(--color-neutral-700)">{{ m.credits }} cr</span>
+<span class="tag tag-neutral">Assigned</span>
+</div>
+</sc-for>
+</div>
+<div style="border:1px solid var(--color-divider);background:#fff">
+<div style="padding:15px 20px;border-bottom:2px solid var(--color-divider);display:flex;align-items:baseline;justify-content:space-between"><h4 style="margin:0">Optional modules</h4><span class="text-muted" style="font-size:12px">Select two · {{ mod.optionalNote }}</span></div>
+<sc-for list="{{ mod.optional }}" as="m" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid var(--color-divider);background:{{ m.rowBg }}">
+<span style="width:80px;flex:none;font-family:var(--font-heading);font-weight:800;font-size:12.5px;color:var(--color-neutral-700)">{{ m.code }}</span>
+<span style="flex:1;min-width:0"><span style="display:block;font-family:var(--font-heading);font-weight:800;font-size:14px">{{ m.title }}</span><span style="display:block;font-size:11.5px;color:var(--color-neutral-600);margin-top:2px">{{ m.staff }} · {{ m.slot }}</span></span>
+<span style="width:70px;flex:none;font-size:12.5px;color:var(--color-neutral-700)">{{ m.credits }} cr</span>
+<span style="width:88px;flex:none;font-size:11.5px;color:{{ m.placesFg }}">{{ m.places }}</span>
+<button onClick="{{ m.onToggle }}" class="btn {{ m.btnCls }}" style="width:104px;flex:none">{{ m.btnLabel }}</button>
+</div>
+</sc-for>
+<div style="padding:16px 20px;display:flex;align-items:center;gap:14px;background:var(--color-surface)">
+<div style="flex:1;font-size:12.5px;color:var(--color-neutral-800)">{{ mod.hint }}</div>
+<button class="btn btn-secondary" onClick="{{ mod.onReset }}">Clear selection</button>
+<button class="btn btn-primary" onClick="{{ mod.onSubmit }}">Submit choices</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isAccomReq }}" hint-placeholder-val="{{ false }}">
+<div style="padding:26px 28px 44px;max-width:1000px">
+<button class="btn btn-ghost" onClick="{{ goAccom }}" style="margin-bottom:14px">← Back to accommodation</button>
+<h6 style="color:var(--color-accent-700);margin:0 0 10px">Accommodation service</h6>
+<h1 style="margin:0 0 8px;font-size:34px">Submit an accommodation request</h1>
+<p class="text-muted" style="font-size:13.5px;margin:0;max-width:620px">The request goes to the Accommodation team on your student record. You can follow it in My requests without emailing anyone.</p>
+<div class="hr" style="margin:20px 0 0"></div>
+<sc-if value="{{ req.submitted }}" hint-placeholder-val="{{ false }}">
+<div style="border:2px solid var(--color-accent);background:var(--color-accent-100);padding:16px 20px;margin-bottom:22px">
+<div style="font-family:var(--font-heading);font-weight:800;font-size:15px;margin-bottom:4px;color:var(--color-accent-800)">Request {{ req.newId }} raised</div>
+<div style="font-size:12.5px;color:var(--color-accent-800)">Accommodation will respond within five working days. It now appears in My requests and in the staff queue.</div>
+</div>
+</sc-if>
+<div style="border:1px solid var(--color-divider);background:#fff">
+<div style="padding:15px 20px;border-bottom:2px solid var(--color-divider)"><h4 style="margin:0">Request details</h4></div>
+<div style="padding:20px">
+<sc-for list="{{ req.choices }}" as="c" hint-placeholder-count="3">
+<div style="margin-bottom:20px">
+<div style="font-size:12.5px;font-family:var(--font-heading);font-weight:800;margin-bottom:4px">{{ c.label }}</div>
+<div class="text-muted" style="font-size:11.5px;margin-bottom:9px">{{ c.note }}</div>
+<div style="display:flex;flex-wrap:wrap;border:1px solid var(--color-divider);width:fit-content">
+<sc-for list="{{ c.opts }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.onClick }}" style="padding:8px 14px;border:none;border-left:1px solid var(--color-divider);font-size:12.5px;cursor:pointer;font-family:var(--font-body);background:{{ o.bg }};color:{{ o.fg }};font-weight:{{ o.fw }}">{{ o.label }}</button></sc-for>
+</div>
+</div>
+</sc-for>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px">
+<div class="field"><label>Move-in date</label><input class="input" value="18 September 2025" readonly></div>
+<div class="field"><label>Contract length</label><input class="input" value="41 weeks — to 27 June 2026" readonly></div>
+</div>
+<div class="field" style="margin-bottom:20px"><label>Anything the team should know</label><textarea class="input" rows="3" placeholder="Accessibility needs, medical requirements, or a room you have already discussed…"></textarea></div>
+<div style="padding:14px 16px;background:var(--color-surface);font-size:12px;color:var(--color-neutral-800);margin-bottom:20px">Support needs recorded on your record are visible to the Accommodation team only as a requirement, never as the underlying note.</div>
+<div style="display:flex;gap:8px;align-items:center">
+<button class="btn btn-primary" onClick="{{ req.onSubmit }}">Submit request</button>
+<button class="btn btn-secondary" onClick="{{ goAccom }}">Cancel</button>
+<span class="text-muted" style="font-size:11.5px;margin-left:6px">{{ req.summary }}</span>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
 </main>
+
+<sc-if value="{{ chatOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:22px;bottom:82px;width:352px;max-height:calc(100vh - 150px);display:flex;flex-direction:column;background:#fff;border:2px solid var(--color-text);box-shadow:var(--shadow-lg);z-index:60;animation:nwIn .12s ease">
+<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--color-text);color:#fff;flex:none">
+<div style="width:24px;height:24px;flex:none;background:var(--color-accent);display:grid;place-items:center;font-family:var(--font-heading);font-weight:800;font-size:12px">N</div>
+<div style="flex:1"><div style="font-family:var(--font-heading);font-weight:800;font-size:13px">Campus assistant</div><div style="font-size:10.5px;opacity:.7">Finds the right page for you</div></div>
+<button onClick="{{ toggleChat }}" style="border:none;background:transparent;color:#fff;cursor:pointer;font-size:14px;padding:2px 6px">✕</button>
+</div>
+<div style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px;min-height:180px">
+<sc-for list="{{ chatMsgs }}" as="m" hint-placeholder-count="2">
+<div style="align-self:{{ m.align }};max-width:88%">
+<div style="padding:9px 12px;font-size:12.5px;line-height:1.5;background:{{ m.bg }};color:{{ m.fg }};border:1px solid {{ m.bd }}">{{ m.text }}</div>
+<sc-if value="{{ m.hasAction }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ m.onAction }}" class="btn btn-secondary" style="margin-top:7px;font-size:12px;padding:6px 10px">{{ m.actionLabel }} →</button>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="flex:none;padding:10px 14px;border-top:1px solid var(--color-divider)">
+<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px">
+<sc-for list="{{ chatChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.onClick }}" style="padding:5px 9px;border:1px solid var(--color-divider);background:var(--color-bg);font-size:11.5px;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="border-color:var(--color-accent);background:var(--color-accent-100)">{{ c.label }}</button></sc-for>
+</div>
+<div style="display:flex;gap:6px">
+<input class="input" value="{{ chatInput }}" onChange="{{ onChatInput }}" onKeyDown="{{ onChatKey }}" placeholder="Ask where something is…" style="flex:1;font-size:12.5px">
+<button class="btn btn-primary" onClick="{{ sendChat }}" style="padding:8px 12px;flex:none">Send</button>
+</div>
+</div>
+</div>
+</sc-if>
+<button onClick="{{ toggleChat }}" title="Campus assistant" style="position:absolute;right:22px;bottom:22px;z-index:61;display:flex;align-items:center;gap:9px;padding:11px 16px;border:2px solid var(--color-text);background:var(--color-text);color:#fff;cursor:pointer;font-family:var(--font-heading);font-weight:800;font-size:13px;box-shadow:var(--shadow-md)" style-hover="background:var(--color-accent);border-color:var(--color-accent)">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>{{ chatBtnLabel }}</button>
+
 </div>
 </div>
 </sc-if>
@@ -635,11 +759,42 @@ const GENROWS={
  depts:()=>[['Admissions','18','126','6.4 hrs','94%'],['Registry','24','218','9.1 hrs','88%'],['Accommodation','16','184','7.8 hrs','91%'],['Academic departments','264','312','8.2 hrs','86%'],['Student Support','29','274','5.6 hrs','96%'],['Marketing','12','48','4.2 hrs','93%']].map(r=>({cells:[T(r[0],{fw:600}),T(r[1]),T(r[2]),T(r[3]),TAG(r[4],parseInt(r[4])>=90?'tag-accent':'tag-neutral')]})),
  settings:()=>[['Student','Own record','Own requests','No','No','No'],['Staff','Full profile in their department','Own department + referred','Support team only','Own department','No'],['Administration','All records','All departments','No','University-wide','Yes']].map(r=>({cells:[T(r[0],{fw:600}),T(r[1]),T(r[2]),TAG(r[3],r[3]==='No'?'tag-neutral':'tag-accent'),T(r[4]),T(r[5],{color:N7})]}))};
 
+const CORE=[{code:'CE201',title:'Data Structures & Algorithms',staff:'Dr Amr Shaker',slot:'Mon 09:00 · Tue 11:00',credits:20},{code:'CE202',title:'Computer Architecture',staff:'Dr Heba Nasr',slot:'Wed 09:00',credits:20},{code:'CE203',title:'Engineering Mathematics II',staff:'Prof. Sameh Adly',slot:'Thu 08:00 · Thu 14:00',credits:20}];
+const OPTIONAL=[{code:'CE221',title:'Introduction to Machine Learning',staff:'Dr Nada Hamdy',slot:'Mon 14:00',credits:20,places:'12 places left'},{code:'CE222',title:'Web & Cloud Systems',staff:'Dr Karim Sabry',slot:'Tue 14:00',credits:20,places:'4 places left'},{code:'CE223',title:'Embedded Systems Design',staff:'Dr Omar Zaki',slot:'Wed 14:00',credits:20,places:'Waiting list'},{code:'BU104',title:'Technology Entrepreneurship',staff:'Dr Laila Saeed',slot:'Thu 11:00',credits:20,places:'20 places left'},{code:'LA110',title:'Arabic Scientific Writing',staff:'Ms Rania Osman',slot:'Fri 10:00',credits:20,places:'8 places left'}];
+const CHAT_KB=[
+ {k:['module','choose module','modules','credit','timetable'],a:'Module choices live on your overview — the "Choose your modules" card takes you to the selection page. You need 120 credits: three core modules are assigned and you pick two optional ones.',screen:'modules',label:'Open module choices',roles:['student']},
+ {k:['accommodation','room','hall','housing','dorm','contract'],a:'Accommodation shows your hall, contract and payment status. To ask for a room change or a specific requirement, use "Submit an accommodation request" at the top of that page.',screen:'accom',label:'Open accommodation'},
+ {k:['request','case','status','complaint','appeal','where is my'],a:'Every request you raise sits in My requests with its department, who owns it, and what changed last. Staff work the same queue, so the status you see is the live one.',screen:'myreq',label:'Open my requests',roles:['student','applicant']},
+ {k:['request','case','queue','assign','refer'],a:'The case queue holds every department\u2019s requests. Filter by status, department or priority, then open a case to change its status, reply, or refer it onward.',screen:'cases',label:'Open case queue',roles:['staff','admin']},
+ {k:['document','upload','transcript','passport','evidence'],a:'Documents holds everything requested of you, verified once and shared across departments. Anything outstanding shows on your overview as a task.',screen:'docs',label:'Open documents'},
+ {k:['message','email','contact','reply','who do i'],a:'Messages keeps one thread per student across every department, so you can see what was already said before asking again.',screen:'comms',label:'Open messages'},
+ {k:['event','open day','fair','welcome week','book'],a:'Events lists open days, applicant days and campus events with what you have booked.',screen:'events',label:'Open events'},
+ {k:['offer','application','admission','apply','condition','defer'],a:'Your application status, the offer conditions and the reply deadline are on your overview. Applications is where staff record decisions.',screen:'mine',label:'Open my application',roles:['applicant']},
+ {k:['application','admission','decision','offer'],a:'Applications lists everything awaiting a decision, oldest first, with the recommendation against each one.',screen:'admissions',label:'Open applications',roles:['staff','admin']},
+ {k:['student','record','profile','360','find'],a:'Students holds one record per person. Search at the top of any page by name or ID, then open the profile for the journey, requests, documents and support tabs.',screen:'students',label:'Open students',roles:['staff','admin']},
+ {k:['report','kpi','figure','number','board','performance'],a:'Reports carries the university-wide figures — applications, conversion, student numbers and case resolution by department. It is limited to administration roles.',screen:'reports',label:'Open reports',roles:['admin']},
+ {k:['role','permission','access','user','who can see'],a:'Users & roles sets what each of the three roles can reach. Support notes stay with the support team; students only ever see their own record.',screen:'settings',label:'Open users & roles',roles:['admin']},
+ {k:['department','team','workload','sla'],a:'Departments shows each team, its open caseload, average response and service level.',screen:'depts',label:'Open departments',roles:['staff','admin']},
+ {k:['log out','logout','sign out'],a:'Log out is at the bottom of the sidebar and in the top right of the header, from every view.'},
+ {k:['support','wellbeing','disability','welfare','counsel'],a:'Support needs are recorded on the student record, but the notes themselves stay with the support team. Anyone else can raise a referral without seeing the detail.'}];
+
 class Component extends DCLogic {
-  state={screen:'login',role:'student',pick:'student',remember:true,navOpen:true,q:'',student:'NW-2231',tab:'Overview',caseId:null,changed:false,fStatus:'All',fDept:'All',fPri:'All'};
+  state={screen:'login',role:'student',pick:'student',remember:true,navOpen:true,q:'',student:'NW-2231',tab:'Overview',caseId:null,changed:false,fStatus:'All',fDept:'All',fPri:'All',picked:['CE221'],modSubmitted:false,reqHall:'Aswan Court',reqRoom:'Standard single',reqReason:'Room change',reqSubmitted:false,chatOpen:false,chatInput:'',chat:null};
   go=(s)=>this.setState({screen:s,q:'',caseId:null});
   openStudent=(id,from)=>this.setState({screen:'profile',student:id,tab:'Overview',q:'',fromScreen:from||this.state.screen});
   home(role){return role==='student'||role==='applicant'?'mine':'dash';}
+  send(raw){
+    const text=(raw||'').trim(); if(!text) return;
+    const role=this.state.role, q=text.toLowerCase();
+    let best=null,score=0;
+    CHAT_KB.forEach(e=>{ if(e.roles&&!e.roles.includes(role))return;
+      const hits=e.k.reduce((n,k)=>n+(q.includes(k)?k.length:0),0);
+      if(hits>score){score=hits;best=e;} });
+    const reply=best?{who:'bot',text:best.a,screen:best.screen,label:best.label}
+      :{who:'bot',text:'I did not catch that one. I can help with modules, accommodation, requests and cases, documents, messages, events'+(role==='admin'?', reports and roles.':'.')};
+    const log=this.state.chat||[{who:'bot',text:'Hello — I can point you to the right page. Ask in your own words, or pick one below.'}];
+    this.setState({chat:[...log,{who:'me',text},reply],chatInput:''});
+  }
   renderVals(){
     const st=this.state, role=st.role, sc=st.screen;
     const R=ROLES[role]||ROLES.student, P=ROLES[st.pick]||ROLES.student;
@@ -669,14 +824,14 @@ class Component extends DCLogic {
     const mine=role==='applicant'?{
       kicker:'Admissions portal · NW-2231',title:'Hello, Nour',sub:'Your application to BSc Computer Engineering is with the Admissions team. Two items need you.',
       hasAction:true,actionTitle:'Upload your final transcript',actionNote:'Requested by Registry on 11 August · due 20 August',actionBtn:'Upload document',
-      stats:[{label:'Application status',value:'Offer',note:'Conditional — one grade'},{label:'Reply by',value:'20 Aug',note:'Offer condition deadline'},{label:'Open requests',value:'2',note:'Both with staff'},{label:'Documents due',value:'1',note:'Final transcript'}],
+      facts:[{label:'Application',value:'Conditional offer'},{label:'Reply by',value:'20 August'}],onAction:()=>this.go('docs'),
       leftTitle:'My application journey',rightTitle:'My requests',
       steps:[{label:'Enquiry',note:'Open day, 12 June'},{label:'Application submitted',note:'2 August'},{label:'Conditional offer',note:'8 August — one condition'},{label:'Offer accepted',note:'Reply by 20 August'},{label:'Enrolment',note:'Opens 1 September'}].map((s,i)=>({...s,mark:i<2?INK:i===2?ACC:'var(--color-neutral-400)',fill:i<2?INK:i===2?ACC:'transparent'})),
       noteTitle:'What happens next',noteBody:'Once your transcript is verified, Admissions reassesses the condition. You are notified in this portal and by email — no need to call.'
     }:{
       kicker:'Student portal · NW-2145',title:'Hello, Farida',sub:'Semester 1 is under way. One request is waiting on you and your accommodation contract is signed.',
       hasAction:true,actionTitle:'Confirm your module choices',actionNote:'Academic department · closes 22 August',actionBtn:'Choose modules',
-      stats:[{label:'Programme',value:'Year 1',note:'BSc Computer Engineering'},{label:'Attendance',value:'86%',note:'Last four weeks'},{label:'Open requests',value:'1',note:'With the Academic team'},{label:'Accommodation',value:'A-207',note:'Aswan Court'}],
+      facts:[{label:'Programme',value:'BSc Computer Engineering, Year 1'},{label:'Accommodation',value:'Aswan Court A-207'}],onAction:()=>this.go('modules'),
       leftTitle:'My journey',rightTitle:'My requests',
       steps:[{label:'Application',note:'Submitted July 2025'},{label:'Offer accepted',note:'August 2025'},{label:'Enrolled',note:'September 2025'},{label:'Year 1 in progress',note:'Semester 1'},{label:'Graduation',note:'Expected June 2029'}].map((s,i)=>({...s,mark:i<3?INK:i===3?ACC:'var(--color-neutral-400)',fill:i<3?INK:i===3?ACC:'transparent'})),
       noteTitle:'One place to look',noteBody:'Anything you raise here appears in the same queue staff work from, so you can see who has it and what changed without emailing.'
@@ -686,7 +841,7 @@ class Component extends DCLogic {
 
     return {
       isLogin:sc==='login', isApp:sc!=='login',
-      isMine:sc==='mine', isMyRequests:sc==='myreq'||sc==='journey', isDash:sc==='dash', isProfile:sc==='profile', isCases:sc==='cases', isAccom:sc==='accom', isReports:sc==='reports', isGeneric:!!genKey,
+      isMine:sc==='mine', isMyRequests:sc==='myreq'||sc==='journey', isModules:sc==='modules', isAccomReq:sc==='accomreq', isAdmin:role==='admin', isStudentSide, isDash:sc==='dash', isProfile:sc==='profile', isCases:sc==='cases', isAccom:sc==='accom', isReports:sc==='reports', isGeneric:!!genKey,
       // login
       portals:[{k:'student',label:'Student',note:'Enrolled students'},{k:'applicant',label:'Admissions',note:'Applicants & offer holders'},{k:'staff',label:'Staff',note:'Academic & professional services'},{k:'admin',label:'Administration',note:'University administrators'}].map(p=>({label:p.label,note:p.note,onPick:()=>this.setState({pick:p.k}),bg:st.pick===p.k?ACC:'transparent',fg:st.pick===p.k?'#fff':'var(--color-text)'})),
       idLabel:P.idLabel, idValue:P.idValue, portalName:sc==='login'?P.name:R.name,
@@ -706,10 +861,10 @@ class Component extends DCLogic {
       // staff/admin dashboard
       dash:{kicker:role==='admin'?'Administration':'Staff workspace · Admissions',greeting:role==='admin'?'Good morning, Laila':'Good morning, Hana',
         summary:role==='admin'?'Thursday 13 August · 1,284 cases are open across eight departments, 92% within service level. Two departments are running behind on referrals.':'Thursday 13 August · 38 requests arrived overnight, 4 need a decision from you today, and 3 cases are approaching their response deadline.',
-        sideTitle:role==='admin'?'Departments above threshold':'Team workload',
+        cols:role==='admin'?'1.25fr .75fr':'1fr',rule:role==='admin'?'1px solid var(--color-divider)':'none',sideTitle:role==='admin'?'Departments above threshold':'Team workload',
         sideNote:role==='admin'?'Academic departments and Registry are the two areas above the amber threshold this week.':'Two colleagues are above the amber caseload threshold. Referrals to Registry are running one day behind.'},
-      metrics:[{label:'Active students',value:'7,412',delta:'+2.4%',note:'Six faculties'},{label:'New requests',value:'38',delta:'today',note:'12 unassigned'},{label:'Pending cases',value:'126',delta:'+9',note:'23 assigned to you'},{label:'Applications',value:'1,904',delta:'+14%',note:'86 awaiting decision'},{label:'Tasks due',value:'11',delta:'3 today',note:'Next at 16:00'}],
-      showJourney:this.props.showJourney!==false,
+      metrics:role==='admin'?[{label:'Active students',value:'7,412',delta:'+2.4%',note:'Six faculties'},{label:'Open cases',value:'1,284',delta:'+42',note:'Eight departments'},{label:'Applications',value:'1,904',delta:'+14%',note:'86 awaiting decision'},{label:'Resolved in SLA',value:'92%',delta:'+6pts',note:'Target 90%'},{label:'Staff accounts',value:'428',delta:'+12',note:'SSO enforced'}]:[{label:'Assigned to me',value:'23',delta:'+4',note:'Open cases'},{label:'Waiting on me today',value:'4',note:'Decisions due',delta:''},{label:'Tasks due',value:'11',delta:'3 today',note:'Next at 16:00'}],
+      showJourney:role==='admin'&&this.props.showJourney!==false,
       journey:[{stage:'Prospect',count:'2,140',note:'Enquiries and events',pct:'62%'},{stage:'Applicant',count:'1,904',note:'86 awaiting decision',pct:'55%'},{stage:'Offer',count:'1,206',note:'742 accepted',pct:'42%'},{stage:'Enrolled',count:'—',note:'Opens 1 September',pct:'0%'},{stage:'Current',count:'7,412',note:'318 with open cases',pct:'88%'},{stage:'Graduate',count:'21,480',note:'Alumni records',pct:'100%'}].map((j,i)=>({...j,n:'0'+(i+1),onClick:()=>this.go('students'),bg:i===1?INK:'transparent',fg:i===1?'#fff':'var(--color-text)',trackBg:i===1?'rgba(255,255,255,.25)':N2,barBg:i===1?'var(--color-accent-400)':ACC})),
       work:[{n:'12',title:'Requests waiting for action',sub:'Oldest raised 2 days ago',tag:'Queue',tagCls:'tag-neutral'},{n:'8',title:'Applications require a decision',sub:'Over the 10 working day target',tag:'Overdue',tagCls:'tag-accent'},{n:'3',title:'Cases approaching deadline',sub:'Within 24 hours',tag:'Urgent',tagCls:'tag-outline'},{n:'4',title:'Referrals from other departments',sub:'Registry, Accommodation and Support',tag:'Referred',tagCls:'tag-accent-2'}].map((w,i)=>({...w,nBg:i<2?ACC:N2,nFg:i<2?'#fff':'var(--color-text)',onClick:()=>this.go('cases')})),
       activity:[{who:'Tamer Hosny',what:'accepted a referral on CS-4817 — visa appointment letter.',when:'25 min ago',dept:'Registry',dot:ACC},{who:'Rania Adel',what:'requested a support plan confirmation for Habiba Sherif.',when:'1 hr ago',dept:'Accommodation',dot:INK},{who:'Nadia Wahba',what:'resolved CS-4788 and issued the letter automatically.',when:'2 hrs ago',dept:'Registry',dot:INK},{who:'Mona Refaat',what:'confirmed accessibility arrangements for the open day.',when:'Yesterday',dept:'Marketing',dot:INK}],
@@ -754,6 +909,40 @@ class Component extends DCLogic {
       kpis:[{label:'Applications, cycle to date',value:'1,904',delta:'+14%',note:'Against 1,672 last cycle'},{label:'Offers accepted',value:'742',delta:'+8%',note:'62% conversion'},{label:'Student numbers',value:'7,412',delta:'+2.4%',note:'Target 7,600 by 2027'},{label:'Cases resolved in SLA',value:'92%',delta:'+6pts',note:'Target 90%'}],
       faculties:[{name:'Engineering',applied:612,offers:402,enrolled:248},{name:'Health Sciences',applied:388,offers:246,enrolled:152},{name:'Business',applied:342,offers:228,enrolled:141},{name:'Law',applied:248,offers:148,enrolled:92},{name:'Architecture',applied:186,offers:112,enrolled:64},{name:'Arts',applied:128,offers:70,enrolled:45}].map(f=>({...f,w1:Math.round(f.enrolled/612*100)+'%',w2:Math.round((f.offers-f.enrolled)/612*100)+'%'})),
       deptPerf:[{name:'Admissions',open:126,res:842,avg:'1.4',sla:'94%'},{name:'Registry',open:218,res:1204,avg:'2.2',sla:'88%'},{name:'Accommodation',open:184,res:906,avg:'1.8',sla:'91%'},{name:'Academic departments',open:312,res:1486,avg:'2.6',sla:'86%'},{name:'Student Support',open:274,res:1486,avg:'1.1',sla:'96%'},{name:'Marketing',open:48,res:162,avg:'1.2',sla:'93%'}].map(d=>({...d,cls:parseInt(d.sla)>=90?'tag-accent':'tag-neutral'})),
+      metricCols:role==='admin'?'repeat(5,1fr)':'repeat(3,1fr)',
+      accomCols:staffish?'1fr 1fr':'1fr',
+      goAccom:()=>this.go('accom'), goAccomReq:()=>this.go('accomreq'), goMine:()=>this.go('mine'), goModules:()=>this.go('modules'),
+      // module choice
+      mod:(()=>{const picked=st.picked;const credits=60+picked.length*20;const ok=credits===100;
+        return {credits,creditFg:ok?'var(--color-accent-700)':'var(--color-text)',creditBd:ok?'var(--color-accent)':'var(--color-neutral-300)',submitted:st.modSubmitted,
+          core:CORE,optionalNote:picked.length+' of 2 chosen',
+          hint:ok?'100 credits selected — ready to submit.':'Select '+(2-picked.length)+' more optional module'+(2-picked.length===1?'':'s')+' to reach 100 credits.',
+          optional:OPTIONAL.map(m=>{const on=picked.includes(m.code);const full=m.places==='Waiting list';
+            return {...m,rowBg:on?A1:'transparent',placesFg:full?'var(--color-accent-700)':N6,btnCls:on?'btn-primary':'btn-secondary',btnLabel:on?'Selected':full?'Join list':'Select',
+              onToggle:()=>this.setState({modSubmitted:false,picked:on?picked.filter(x=>x!==m.code):(picked.length<2?[...picked,m.code]:picked)})};}),
+          onReset:()=>this.setState({picked:[],modSubmitted:false}),
+          onSubmit:()=>{if(st.picked.length!==2)return;
+            if(!CASES.some(c=>c.id==='CS-4840')){CASES.unshift({id:'CS-4840',sid:myId,request:'Module choices — confirmation',dept:'Academic',status:'New',priority:'Medium',owner:'Unassigned',date:'13 Aug 10:04',body:'Optional module choices submitted for adviser confirmation: '+st.picked.join(', ')+'.',hist:[['Submitted from the student portal','13 Aug 10:04']]});}
+            this.setState({modSubmitted:true});}};})(),
+      // accommodation request
+      req:(()=>{const mk=(label,note,key,opts)=>({label,note,opts:opts.map(o=>({label:o,onClick:()=>this.setState({[key]:o,reqSubmitted:false}),bg:st[key]===o?ACC:'transparent',fg:st[key]===o?'#fff':'var(--color-text)',fw:st[key]===o?600:400}))});
+        return {submitted:st.reqSubmitted,newId:'CS-4841',
+          summary:st.reqReason+' · '+st.reqHall+' · '+st.reqRoom,
+          choices:[mk('What do you need?','Pick the closest match — the team will come back if they need more.','reqReason',['Room change','New application','Accessibility requirement','Contract query']),
+                   mk('Preferred hall','Availability is shown to the team when they assess it.','reqHall',['Rosetta Hall','Aswan Court','Karnak House','Philae Annexe']),
+                   mk('Room type','','reqRoom',['Standard single','En-suite','Accessible ground floor','Postgraduate studio'])],
+          onSubmit:()=>{if(!CASES.some(c=>c.id==='CS-4841')){CASES.unshift({id:'CS-4841',sid:myId,request:st.reqReason+' — '+st.reqHall,dept:'Accommodation',status:'New',priority:'Medium',owner:'Unassigned',date:'13 Aug 10:11',body:st.reqReason+' requested. Preferred hall: '+st.reqHall+'. Room type: '+st.reqRoom+'. Move-in 18 September 2025.',hist:[['Raised in the student portal','13 Aug 10:11']]});}
+            this.setState({reqSubmitted:true});}};})(),
+      // assistant
+      chatOpen:st.chatOpen, chatBtnLabel:st.chatOpen?'Assistant':'Need help?', chatInput:st.chatInput,
+      toggleChat:()=>this.setState({chatOpen:!st.chatOpen}),
+      onChatInput:e=>this.setState({chatInput:e.target.value}),
+      onChatKey:e=>{if(e.key==='Enter')this.send(e.target.value);},
+      sendChat:()=>this.send(st.chatInput),
+      chatChips:(role==='student'?['Choosing my modules','Accommodation request','Where is my request?']:role==='applicant'?['My offer','Upload a document','Where is my request?']:role==='admin'?['University reports','Roles and access','Department workload']:['Case queue','Find a student','Applications to decide']).map(c=>({label:c,onClick:()=>this.send(c)})),
+      chatMsgs:(st.chat||[{who:'bot',text:'Hello — I can point you to the right page. Ask in your own words, or pick one below.'}]).map(m=>({text:m.text,align:m.who==='me'?'flex-end':'flex-start',
+        bg:m.who==='me'?'var(--color-accent)':'var(--color-bg)',fg:m.who==='me'?'#fff':'var(--color-text)',bd:m.who==='me'?'var(--color-accent)':'var(--color-divider)',
+        hasAction:!!m.screen,actionLabel:m.label,onAction:m.screen?()=>this.setState({screen:m.screen,chatOpen:false,q:''}):undefined})),
       // generic
       gen:genKey?{...GEN[genKey],rows:(GENROWS[genKey]?GENROWS[genKey]():[]).map(r=>({...r,cursor:r.sid&&staffish?'pointer':'default',onClick:r.sid&&staffish?()=>this.openStudent(r.sid,'students'):undefined}))}:{stats:[],cols:[],rows:[],aside:[]}
     };
