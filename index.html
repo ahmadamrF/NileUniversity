@@ -18,7 +18,7 @@
 <div><div style="font-family:var(--font-heading);font-weight:800;font-size:16px;letter-spacing:.01em">NILE WISDOM UNIVERSITY</div><div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-neutral-600);margin-top:2px">Digital Platform</div></div>
 </div>
 <div style="position:relative;flex:1;display:grid;grid-template-columns:1fr 460px;min-height:0">
-<div style="padding:56px 48px 56px 40px;display:flex;flex-direction:column;justify-content:center;overflow-y:auto">
+<div style="padding:56px 48px 56px 40px;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto"><div style="margin-block:auto">
 <div style="width:72px;height:6px;background:var(--color-accent);margin-bottom:26px"></div>
 <h1 style="font-size:46px;line-height:1.06;letter-spacing:-.025em;margin:0 0 16px;max-width:620px">One platform for students, staff and administration.</h1>
 <p style="font-size:15.5px;line-height:1.6;color:var(--color-neutral-800);margin:0 0 34px;max-width:520px">Sign in to the view for your role. Applicants use the admissions portal until they enrol, after which the same record becomes their student view.</p>
@@ -26,6 +26,7 @@
 <sc-for list="{{ loginStats }}" as="s" hint-placeholder-count="4">
 <div style="padding:16px 20px;border-right:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)"><div style="font-family:var(--font-heading);font-weight:800;font-size:24px;color:var(--color-accent-700)">{{ s.v }}</div><div style="font-size:12px;color:var(--color-neutral-700);margin-top:4px">{{ s.l }}</div></div>
 </sc-for>
+</div>
 </div>
 </div>
 <div style="border-left:2px solid var(--color-divider);background:rgba(255,255,255,.86);padding:40px 40px 32px;display:flex;flex-direction:column;overflow-y:auto">
@@ -131,6 +132,14 @@
 <h1 style="margin:0 0 8px;font-size:34px">{{ mine.title }}</h1>
 <p class="text-muted" style="font-size:14px;margin:0;max-width:660px;text-wrap:pretty">{{ mine.sub }}</p>
 <div class="hr" style="margin:20px 0 0"></div>
+<sc-if value="{{ mine.hasDecision }}" hint-placeholder-val="{{ false }}">
+<div style="border:2px solid var(--color-accent);background:#fff;padding:20px 22px;margin-bottom:22px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="flex:1"><div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px">Decision</div><div style="font-family:var(--font-heading);font-weight:800;font-size:22px;margin-bottom:6px">{{ mine.decisionTitle }}</div><div class="text-muted" style="font-size:13px">{{ mine.decisionNote }}</div></div>
+<sc-if value="{{ mine.decisionAccepted }}" hint-placeholder-val="{{ false }}"><button class="btn btn-primary" style="flex:none">Accept your place</button></sc-if>
+</div>
+</div>
+</sc-if>
 <sc-if value="{{ mine.hasAction }}" hint-placeholder-val="{{ false }}">
 <div style="border:2px solid var(--color-accent);padding:18px 20px;display:flex;align-items:center;gap:20px;background:#fff;margin-bottom:22px">
 <div style="flex:1"><div style="font-family:var(--font-heading);font-weight:800;font-size:17px;margin-bottom:4px">{{ mine.actionTitle }}</div><div class="text-muted" style="font-size:12.5px">{{ mine.actionNote }}</div></div>
@@ -521,6 +530,70 @@
 </div>
 </sc-if>
 
+<sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+<div style="padding:26px 28px 44px">
+<h6 style="color:var(--color-accent-700);margin:0 0 10px">Admissions</h6>
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+<div><h1 style="margin:0 0 8px;font-size:34px">Applications</h1><p class="text-muted" style="font-size:13.5px;margin:0;max-width:640px">Every application awaiting a decision, oldest first. Open one to read the submission and accept or reject it — the applicant is notified in their portal.</p></div>
+<div style="display:flex;gap:8px;flex:none"><button class="btn btn-secondary">Cycle settings</button><button class="btn btn-primary">Export decisions</button></div>
+</div>
+<div class="hr" style="margin:20px 0 0"></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--color-divider);background:#fff">
+<sc-for list="{{ reviewStats }}" as="s" hint-placeholder-count="4"><div style="padding:16px 20px 18px;border-right:1px solid var(--color-divider)"><div style="font-size:11.5px;color:var(--color-neutral-700);margin-bottom:10px">{{ s.label }}</div><div style="font-family:var(--font-heading);font-weight:800;font-size:26px;line-height:1">{{ s.value }}</div><div style="font-size:11px;color:var(--color-neutral-600);margin-top:7px">{{ s.note }}</div></div></sc-for>
+</div>
+<div style="border:1px solid var(--color-divider);background:#fff">
+<div style="display:flex;background:var(--color-surface);border-bottom:2px solid var(--color-divider);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-700)">
+<div style="flex:1.2;padding:10px 14px">Applicant</div><div style="flex:1.3;padding:10px 14px">Programme</div><div style="width:96px;flex:none;padding:10px 14px">Submitted</div><div style="flex:1;padding:10px 14px">Grades</div><div style="width:130px;flex:none;padding:10px 14px">Status</div><div style="width:120px;flex:none;padding:10px 14px"></div>
+</div>
+<sc-for list="{{ reviewRows }}" as="r" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;border-bottom:1px solid var(--color-divider);background:{{ r.rowBg }}" style-hover="background:var(--color-accent-100)">
+<div style="flex:1.2;min-width:0;padding:12px 14px"><div style="font-family:var(--font-heading);font-weight:800;font-size:13.5px">{{ r.name }}</div><div style="font-size:11px;color:var(--color-neutral-600);margin-top:2px">{{ r.id }}</div></div>
+<div style="flex:1.3;min-width:0;padding:12px 14px;font-size:13px">{{ r.programme }}</div>
+<div style="width:96px;flex:none;padding:12px 14px;font-size:12.5px;color:var(--color-neutral-700)">{{ r.submitted }}</div>
+<div style="flex:1;min-width:0;padding:12px 14px;font-size:12.5px">{{ r.grades }}</div>
+<div style="width:130px;flex:none;padding:12px 14px"><span class="tag {{ r.cls }}">{{ r.status }}</span></div>
+<div style="width:120px;flex:none;padding:12px 14px"><button class="btn btn-secondary" onClick="{{ r.onOpen }}" style="width:100%">{{ r.btnLabel }}</button></div>
+</div>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{ rv.open }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:rgba(22,48,63,.42);display:flex;align-items:flex-start;justify-content:center;padding:48px 24px;z-index:70;animation:nwIn .12s ease">
+<div style="width:100%;max-width:720px;background:#fff;border:2px solid var(--color-text);box-shadow:var(--shadow-lg);max-height:100%;display:flex;flex-direction:column">
+<div style="display:flex;align-items:flex-start;gap:14px;padding:18px 22px;border-bottom:2px solid var(--color-divider);flex:none">
+<div style="width:44px;height:44px;flex:none;background:var(--color-accent);color:#fff;display:grid;place-items:center;font-family:var(--font-heading);font-weight:800;font-size:16px">{{ rv.initials }}</div>
+<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:10px"><h4 style="margin:0;font-size:20px">{{ rv.name }}</h4><span class="tag {{ rv.cls }}">{{ rv.status }}</span></div><div style="font-size:12px;color:var(--color-neutral-700);margin-top:3px">{{ rv.id }} · {{ rv.programme }}</div></div>
+<button onClick="{{ rv.onClose }}" class="btn btn-secondary btn-icon" style="justify-content:center;flex:none">✕</button>
+</div>
+<div style="flex:1;overflow-y:auto">
+<div style="display:grid;grid-template-columns:1fr 1fr">
+<sc-for list="{{ rv.facts }}" as="f" hint-placeholder-count="6"><div style="padding:14px 22px;border-right:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)"><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600);margin-bottom:5px">{{ f.k }}</div><div style="font-family:var(--font-heading);font-weight:800;font-size:13.5px">{{ f.v }}</div></div></sc-for>
+</div>
+<div style="padding:16px 22px;border-bottom:1px solid var(--color-divider)">
+<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600);margin-bottom:8px">Personal statement</div>
+<p style="font-size:13px;line-height:1.6;margin:0">{{ rv.statement }}</p>
+</div>
+<div style="padding:16px 22px;border-bottom:1px solid var(--color-divider)">
+<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600);margin-bottom:10px">Documents</div>
+<sc-for list="{{ rv.docs }}" as="d" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--color-divider)"><span style="flex:1;font-size:12.5px">{{ d.name }}</span><span class="tag {{ d.cls }}">{{ d.status }}</span></div></sc-for>
+</div>
+<sc-if value="{{ rv.decided }}" hint-placeholder-val="{{ false }}">
+<div style="padding:16px 22px;background:var(--color-accent-100)">
+<div style="font-family:var(--font-heading);font-weight:800;font-size:14px;margin-bottom:5px;color:var(--color-accent-800)">{{ rv.decisionTitle }}</div>
+<p style="font-size:12.5px;margin:0;color:var(--color-accent-800)">{{ rv.decisionNote }}</p>
+</div>
+</sc-if>
+</div>
+<div style="flex:none;padding:16px 22px;border-top:2px solid var(--color-divider);display:flex;align-items:center;gap:8px;background:var(--color-bg)">
+<div style="flex:1;font-size:11.5px;color:var(--color-neutral-700)">{{ rv.slaNote }}</div>
+<button class="btn btn-secondary" onClick="{{ rv.onReject }}">Reject application</button>
+<button class="btn btn-primary" onClick="{{ rv.onAccept }}">Accept application</button>
+</div>
+</div>
+</div>
+</sc-if>
+</sc-if>
+
 <sc-if value="{{ isGeneric }}" hint-placeholder-val="{{ false }}">
 <div style="padding:26px 28px 44px">
 <h6 style="color:var(--color-accent-700);margin:0 0 10px">{{ gen.kicker }}</h6>
@@ -548,6 +621,48 @@
 <div style="padding:13px 20px;border-bottom:1px solid var(--color-divider)"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px"><span style="font-family:var(--font-heading);font-weight:800;font-size:13px">{{ a.title }}</span><span style="font-size:11.5px;color:var(--color-accent-700);font-family:var(--font-heading);font-weight:800">{{ a.value }}</span></div><div class="text-muted" style="font-size:11.5px;margin-top:3px">{{ a.note }}</div></div>
 </sc-for>
 <div style="padding:16px 20px;background:var(--color-surface)"><div style="font-family:var(--font-heading);font-weight:800;font-size:12.5px;margin-bottom:6px">{{ gen.noteTitle }}</div><p class="text-muted" style="font-size:12px;margin:0">{{ gen.noteBody }}</p></div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isAppForm }}" hint-placeholder-val="{{ false }}">
+<div style="padding:26px 28px 44px;max-width:1000px">
+<h6 style="color:var(--color-accent-700);margin:0 0 10px">Admissions portal · 2025/26 entry</h6>
+<h1 style="margin:0 0 8px;font-size:34px">Apply to Nile Wisdom University</h1>
+<p class="text-muted" style="font-size:13.5px;margin:0;max-width:640px">One form, then one place to watch it. Once submitted, your application goes to the Admissions team and you can follow every change here.</p>
+<div class="hr" style="margin:20px 0 0"></div>
+<div style="display:flex;border:1px solid var(--color-divider);background:#fff;margin-bottom:22px">
+<sc-for list="{{ form.steps }}" as="s" hint-placeholder-count="3"><div style="flex:1;padding:13px 18px;border-right:1px solid var(--color-divider);background:{{ s.bg }};color:{{ s.fg }}"><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:5px">Step {{ s.n }}</div><div style="font-family:var(--font-heading);font-weight:800;font-size:13.5px">{{ s.label }}</div></div></sc-for>
+</div>
+<div style="border:1px solid var(--color-divider);background:#fff">
+<div style="padding:15px 20px;border-bottom:2px solid var(--color-divider)"><h4 style="margin:0">Your details</h4></div>
+<div style="padding:20px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px">
+<div class="field"><label>Full name</label><input class="input" value="Nour El-Sayed" readonly></div>
+<div class="field"><label>Date of birth</label><input class="input" value="14 March 2007" readonly></div>
+<div class="field"><label>Email</label><input class="input" value="nour.elsayed@gmail.com" readonly></div>
+<div class="field"><label>Mobile</label><input class="input" value="+20 100 224 8871" readonly></div>
+</div>
+<sc-for list="{{ form.choices }}" as="c" hint-placeholder-count="3">
+<div style="margin-bottom:20px">
+<div style="font-size:12.5px;font-family:var(--font-heading);font-weight:800;margin-bottom:4px">{{ c.label }}</div>
+<div class="text-muted" style="font-size:11.5px;margin-bottom:9px">{{ c.note }}</div>
+<div style="display:flex;flex-wrap:wrap;border:1px solid var(--color-divider);width:fit-content">
+<sc-for list="{{ c.opts }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.onClick }}" style="padding:8px 14px;border:none;border-left:1px solid var(--color-divider);font-size:12.5px;cursor:pointer;font-family:var(--font-body);background:{{ o.bg }};color:{{ o.fg }};font-weight:{{ o.fw }}">{{ o.label }}</button></sc-for>
+</div>
+</div>
+</sc-for>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px">
+<div class="field"><label>School or college</label><input class="input" value="Cairo British International School" readonly></div>
+<div class="field"><label>Predicted or final grades</label><input class="input" value="A, A, B — Maths, Physics, Chemistry" readonly></div>
+</div>
+<div class="field" style="margin-bottom:20px"><label>Personal statement</label><textarea class="input" rows="4" placeholder="Why this programme, and what you have done towards it…">I have built two robotics projects with my school team and want to study computer engineering to work on assistive technology.</textarea></div>
+<div style="padding:14px 16px;background:var(--color-surface);font-size:12px;color:var(--color-neutral-800);margin-bottom:20px">Supporting documents — transcripts and photo ID — are requested after submission and uploaded once, in Documents.</div>
+<div style="display:flex;gap:8px;align-items:center">
+<button class="btn btn-primary" onClick="{{ form.onSubmit }}">Submit application</button>
+<span class="text-muted" style="font-size:11.5px;margin-left:6px">{{ form.summary }}</span>
+</div>
 </div>
 </div>
 </div>
@@ -710,7 +825,7 @@ const ROLES={
  admin:{name:'Administration',tag:'Admin',me:{name:'Laila Mansour',sub:'System administrator',initials:'LM'},idLabel:'University email',idValue:'l.mansour@nilewisdom.edu'}};
 const NAV={
  student:[{label:'My study',items:[['My overview','mine',ICONS.dash],['My requests','myreq',ICONS.cases]]},{label:'Campus',items:[['Accommodation','accom',ICONS.accom],['Events','events',ICONS.events],['Documents','docs',ICONS.docs],['Messages','comms',ICONS.comms]]}],
- applicant:[{label:'My application',items:[['My application','mine',ICONS.dash],['My requests','myreq',ICONS.cases],['Documents','docs',ICONS.docs]]},{label:'Before I start',items:[['Accommodation','accom',ICONS.accom],['Events','events',ICONS.events],['Messages','comms',ICONS.comms]]}],
+ applicant:[{label:'My application',items:[['My application','mine',ICONS.dash],['Application form','apply',ICONS.apps],['My requests','myreq',ICONS.cases],['Documents','docs',ICONS.docs]]},{label:'Before I start',items:[['Accommodation','accom',ICONS.accom],['Events','events',ICONS.events],['Messages','comms',ICONS.comms]]}],
  staff:[{label:'Work',items:[['Dashboard','dash',ICONS.dash],['Requests & cases','cases',ICONS.cases,'23'],['Students','students',ICONS.students]]},{label:'Services',items:[['Applications','admissions',ICONS.apps,'8'],['Accommodation','accom',ICONS.accom],['Events','events',ICONS.events],['Documents','docs',ICONS.docs],['Messages','comms',ICONS.comms]]}],
  admin:[{label:'Overview',items:[['Dashboard','dash',ICONS.dash],['Reports','reports',ICONS.journey]]},{label:'Records',items:[['Students','students',ICONS.students],['Requests & cases','cases',ICONS.cases],['Applications','admissions',ICONS.apps],['Accommodation','accom',ICONS.accom]]},{label:'Platform',items:[['Departments','depts',ICONS.depts],['Documents','docs',ICONS.docs],['Users & roles','settings',ICONS.settings]]}]};
 const GEN={
@@ -778,11 +893,18 @@ const CHAT_KB=[
  {k:['log out','logout','sign out'],a:'Log out is at the bottom of the sidebar and in the top right of the header, from every view.'},
  {k:['support','wellbeing','disability','welfare','counsel'],a:'Support needs are recorded on the student record, but the notes themselves stay with the support team. Anyone else can raise a referral without seeing the detail.'}];
 
+const APPS=[
+ {id:'NW-2231',name:'Nour El-Sayed',programme:'BSc Computer Engineering',entry:'September 2025',submitted:'—',grades:'A, A, B',school:'Cairo British International School',statement:'I have built two robotics projects with my school team and want to study computer engineering to work on assistive technology.',status:'Not submitted',mine:true},
+ {id:'NW-2310',name:'Habiba Sherif',programme:'BA Architecture',entry:'September 2025',submitted:'30 Jul',grades:'A, A, A',school:'Alexandria Language School',statement:'My portfolio is built around adaptive reuse of Alexandria\u2019s waterfront warehouses.',status:'Awaiting decision'},
+ {id:'NW-2377',name:'Yara Hegazy',programme:'MSc Public Health',entry:'September 2025',submitted:'29 Jul',grades:'First class honours',school:'Ain Shams University',statement:'Three years in district vaccination programmes led me to public health policy.',status:'Awaiting decision'},
+ {id:'NW-2415',name:'Adham Roushdy',programme:'BSc Business Analytics',entry:'September 2025',submitted:'28 Jul',grades:'B, B, C',school:'Maadi STEM School',statement:'I run a small resale business and want the analytics behind the decisions I currently guess at.',status:'Awaiting decision'},
+ {id:'NW-2420',name:'Sara Lotfy',programme:'LLB Law',entry:'September 2025',submitted:'27 Jul',grades:'A, B, B',school:'Nasr City Girls\u2019 College',statement:'I have volunteered with a legal aid clinic since Year 11.',status:'Awaiting decision'},
+ {id:'NW-2431',name:'Hazem Fathy',programme:'MEng Civil Engineering',entry:'September 2025',submitted:'25 Jul',grades:'Awaiting transcript',school:'Helwan Technical Institute',statement:'I want to specialise in water infrastructure for Delta communities.',status:'Awaiting decision'}];
 class Component extends DCLogic {
-  state={screen:'login',role:'student',pick:'student',remember:true,navOpen:true,q:'',student:'NW-2231',tab:'Overview',caseId:null,changed:false,fStatus:'All',fDept:'All',fPri:'All',picked:['CE221'],modSubmitted:false,reqHall:'Aswan Court',reqRoom:'Standard single',reqReason:'Room change',reqSubmitted:false,chatOpen:false,chatInput:'',chat:null};
+  state={screen:'login',role:'student',pick:'student',remember:true,navOpen:true,q:'',student:'NW-2231',tab:'Overview',caseId:null,changed:false,fStatus:'All',fDept:'All',fPri:'All',picked:['CE221'],modSubmitted:false,reqHall:'Aswan Court',reqRoom:'Standard single',reqReason:'Room change',reqSubmitted:false,appProg:'BSc Computer Engineering',appEntry:'September 2025',appMode:'Full time',reviewId:null,chatOpen:false,chatInput:'',chat:null};
   go=(s)=>this.setState({screen:s,q:'',caseId:null});
   openStudent=(id,from)=>this.setState({screen:'profile',student:id,tab:'Overview',q:'',fromScreen:from||this.state.screen});
-  home(role){return role==='student'||role==='applicant'?'mine':'dash';}
+  home(role){if(role==='applicant')return APPS[0].status==='Not submitted'?'apply':'mine';return role==='student'?'mine':'dash';}
   send(raw){
     const text=(raw||'').trim(); if(!text) return;
     const role=this.state.role, q=text.toLowerCase();
@@ -811,7 +933,7 @@ class Component extends DCLogic {
     const stu=id=>STUDENTS.find(s=>s.id===id)||{name:'—',programme:'—'};
     const q=st.q.trim().toLowerCase();
     const found=q.length>1?STUDENTS.filter(s=>s.name.toLowerCase().includes(q)||s.id.toLowerCase().includes(q)||s.programme.toLowerCase().includes(q)).slice(0,5):[];
-    const genKey=GEN[sc]&&GEN[sc].title?sc:null;
+    const genKey=(GEN[sc]&&GEN[sc].title&&!(sc==='admissions'&&role==='admin'))?sc:null;
     const tabList=['Overview','Journey','Requests','Documents','Support'];
     const tabTables={
       Requests:{title:'Requests & cases',note:cur.open.length+' on this record',cols:['Case','Request','Department','Status','Priority','Owner','Updated'],rows:cur.open.map(c=>({cells:[T(c.id,{fw:600,color:'var(--color-accent-700)'}),T(c.request),T(c.dept,{color:N7}),TAG(c.status,SC[c.status]),T(c.priority,{fw:c.priority==='High'?600:400}),T(c.owner,{color:N7}),T(c.date,{color:N7})]}))},
@@ -822,16 +944,19 @@ class Component extends DCLogic {
     const stages=['Prospect','Applicant','Offer','Enrolled','Current','Graduate'];
     const curIdx={'Prospect':0,'Applicant':1,'Offer holder':2,'Current student':4,'Graduate':5}[cur.s.stage]||1;
     const mine=role==='applicant'?{
-      kicker:'Admissions portal · NW-2231',title:'Hello, Nour',sub:'Your application to BSc Computer Engineering is with the Admissions team. Two items need you.',
-      hasAction:true,actionTitle:'Upload your final transcript',actionNote:'Requested by Registry on 11 August · due 20 August',actionBtn:'Upload document',
-      facts:[{label:'Application',value:'Conditional offer'},{label:'Reply by',value:'20 August'}],onAction:()=>this.go('docs'),
+      kicker:'Admissions portal · NW-2231',title:'Hello, Nour',sub:APPS[0].status==='Not submitted'?'Your application form is started but not yet submitted. Complete it to enter the 2025/26 cycle.':APPS[0].status==='Awaiting decision'?'Your application to '+APPS[0].programme+' is with the Admissions team. You will see the decision here as soon as it is made.':'Your application to '+APPS[0].programme+' has been decided. The detail is below.',
+      hasAction:APPS[0].status==='Awaiting decision',actionTitle:'Upload your final transcript',actionNote:'Requested by Registry on 11 August · due 20 August',actionBtn:'Upload document',
+      facts:[{label:'Application',value:APPS[0].status},{label:'Submitted',value:APPS[0].submitted}],onAction:()=>this.go('docs'),
+      hasDecision:APPS[0].status==='Accepted'||APPS[0].status==='Rejected',decisionAccepted:APPS[0].status==='Accepted',
+      decisionTitle:APPS[0].status==='Accepted'?'Offer made — '+APPS[0].programme:'Application unsuccessful',
+      decisionNote:APPS[0].status==='Accepted'?'Admissions accepted your application on 13 August. Reply by 20 August to hold your place; accommodation opens once you accept.':'Admissions could not offer you a place for '+APPS[0].entry+' entry. Feedback has been sent to your email and you may apply again for the January intake.',
       leftTitle:'My application journey',rightTitle:'My requests',
       steps:[{label:'Enquiry',note:'Open day, 12 June'},{label:'Application submitted',note:'2 August'},{label:'Conditional offer',note:'8 August — one condition'},{label:'Offer accepted',note:'Reply by 20 August'},{label:'Enrolment',note:'Opens 1 September'}].map((s,i)=>({...s,mark:i<2?INK:i===2?ACC:'var(--color-neutral-400)',fill:i<2?INK:i===2?ACC:'transparent'})),
       noteTitle:'What happens next',noteBody:'Once your transcript is verified, Admissions reassesses the condition. You are notified in this portal and by email — no need to call.'
     }:{
       kicker:'Student portal · NW-2145',title:'Hello, Farida',sub:'Semester 1 is under way. One request is waiting on you and your accommodation contract is signed.',
       hasAction:true,actionTitle:'Confirm your module choices',actionNote:'Academic department · closes 22 August',actionBtn:'Choose modules',
-      facts:[{label:'Programme',value:'BSc Computer Engineering, Year 1'},{label:'Accommodation',value:'Aswan Court A-207'}],onAction:()=>this.go('modules'),
+      facts:[{label:'Programme',value:'BSc Computer Engineering, Year 1'},{label:'Accommodation',value:'Aswan Court A-207'}],onAction:()=>this.go('modules'),hasDecision:false,decisionAccepted:false,
       leftTitle:'My journey',rightTitle:'My requests',
       steps:[{label:'Application',note:'Submitted July 2025'},{label:'Offer accepted',note:'August 2025'},{label:'Enrolled',note:'September 2025'},{label:'Year 1 in progress',note:'Semester 1'},{label:'Graduation',note:'Expected June 2029'}].map((s,i)=>({...s,mark:i<3?INK:i===3?ACC:'var(--color-neutral-400)',fill:i<3?INK:i===3?ACC:'transparent'})),
       noteTitle:'One place to look',noteBody:'Anything you raise here appears in the same queue staff work from, so you can see who has it and what changed without emailing.'
@@ -841,13 +966,13 @@ class Component extends DCLogic {
 
     return {
       isLogin:sc==='login', isApp:sc!=='login',
-      isMine:sc==='mine', isMyRequests:sc==='myreq'||sc==='journey', isModules:sc==='modules', isAccomReq:sc==='accomreq', isAdmin:role==='admin', isStudentSide, isDash:sc==='dash', isProfile:sc==='profile', isCases:sc==='cases', isAccom:sc==='accom', isReports:sc==='reports', isGeneric:!!genKey,
+      isMine:sc==='mine', isMyRequests:sc==='myreq'||sc==='journey', isModules:sc==='modules', isAccomReq:sc==='accomreq', isAppForm:sc==='apply', isReview:sc==='admissions'&&role==='admin', isAdmin:role==='admin', isStudentSide, isDash:sc==='dash', isProfile:sc==='profile', isCases:sc==='cases', isAccom:sc==='accom', isReports:sc==='reports', isGeneric:!!genKey,
       // login
       portals:[{k:'student',label:'Student',note:'Enrolled students'},{k:'applicant',label:'Admissions',note:'Applicants & offer holders'},{k:'staff',label:'Staff',note:'Academic & professional services'},{k:'admin',label:'Administration',note:'University administrators'}].map(p=>({label:p.label,note:p.note,onPick:()=>this.setState({pick:p.k}),bg:st.pick===p.k?ACC:'transparent',fg:st.pick===p.k?'#fff':'var(--color-text)'})),
       idLabel:P.idLabel, idValue:P.idValue, portalName:sc==='login'?P.name:R.name,
       toggleRemember:()=>this.setState({remember:!st.remember}), rememberBg:st.remember?ACC:'transparent', rememberBd:st.remember?ACC:'var(--color-neutral-400)', rememberMark:st.remember?'✓':'',
-      signIn:()=>this.setState({role:st.pick,screen:this.home(st.pick),q:'',caseId:null,tab:'Overview',student:st.pick==='applicant'?'NW-2231':'NW-2231'}),
-      logOut:()=>this.setState({screen:'login',q:'',caseId:null}),
+      signIn:()=>this.setState({role:st.pick,screen:this.home(st.pick),q:'',caseId:null,tab:'Overview',student:'NW-2231',chat:null,chatInput:'',chatOpen:false}),
+      logOut:()=>this.setState({screen:'login',q:'',caseId:null,chat:null,chatInput:'',chatOpen:false}),
       loginStats:[{v:'7,412',l:'Current students'},{v:'1,904',l:'Applicants in cycle'},{v:'8',l:'Connected departments'},{v:'92%',l:'Requests answered in SLA'}],
       // shell
       toggleNav:()=>this.setState({navOpen:!st.navOpen}), navOpen:st.navOpen, navW:st.navOpen?'228px':'62px',
@@ -933,6 +1058,34 @@ class Component extends DCLogic {
                    mk('Room type','','reqRoom',['Standard single','En-suite','Accessible ground floor','Postgraduate studio'])],
           onSubmit:()=>{if(!CASES.some(c=>c.id==='CS-4841')){CASES.unshift({id:'CS-4841',sid:myId,request:st.reqReason+' — '+st.reqHall,dept:'Accommodation',status:'New',priority:'Medium',owner:'Unassigned',date:'13 Aug 10:11',body:st.reqReason+' requested. Preferred hall: '+st.reqHall+'. Room type: '+st.reqRoom+'. Move-in 18 September 2025.',hist:[['Raised in the student portal','13 Aug 10:11']]});}
             this.setState({reqSubmitted:true});}};})(),
+      // application form
+      form:(()=>{const mk=(label,note,key,opts)=>({label,note,opts:opts.map(o=>({label:o,onClick:()=>this.setState({[key]:o}),bg:st[key]===o?ACC:'transparent',fg:st[key]===o?'#fff':'var(--color-text)',fw:st[key]===o?600:400}))});
+        return {steps:[{n:'01',label:'Your details'},{n:'02',label:'Submitted'},{n:'03',label:'Decision'}].map((x,i)=>({...x,bg:i===0?INK:'transparent',fg:i===0?'#fff':'var(--color-text)'})),
+          summary:st.appProg+' · '+st.appEntry+' · '+st.appMode,
+          choices:[mk('Programme','One choice per application; you may submit a second application later.','appProg',['BSc Computer Engineering','MEng Civil Engineering','BA Architecture','BSc Business Analytics','LLB Law']),
+                   mk('Entry point','','appEntry',['September 2025','January 2026']),
+                   mk('Study mode','','appMode',['Full time','Part time'])],
+          onSubmit:()=>{APPS[0].status='Awaiting decision';APPS[0].submitted='13 Aug';APPS[0].programme=st.appProg;APPS[0].entry=st.appEntry;
+            if(!CASES.some(c=>c.id==='CS-4842'))CASES.unshift({id:'CS-4842',sid:'NW-2231',request:'Application submitted — awaiting decision',dept:'Admissions',status:'New',priority:'High',owner:'Unassigned',date:'13 Aug 10:22',body:'Application to '+st.appProg+' for '+st.appEntry+' entry submitted through the applicant portal.',hist:[['Submitted from the applicant portal','13 Aug 10:22']]});
+            this.setState({screen:'mine'});}};})(),
+      reviewStats:[{label:'Awaiting decision',value:String(APPS.filter(a=>a.status==='Awaiting decision').length),note:'Oldest 25 July'},{label:'Accepted',value:String(APPS.filter(a=>a.status==='Accepted').length),note:'This cycle'},{label:'Rejected',value:String(APPS.filter(a=>a.status==='Rejected').length),note:'This cycle'},{label:'Not yet submitted',value:String(APPS.filter(a=>a.status==='Not submitted').length),note:'Started, incomplete'}],
+      reviewRows:APPS.map(a=>({name:a.name,id:a.id,programme:a.programme,submitted:a.submitted,grades:a.grades,status:a.status,
+        cls:a.status==='Accepted'?'tag-accent':a.status==='Rejected'?'tag-outline':a.status==='Not submitted'?'tag-neutral':'tag-outline',
+        rowBg:st.reviewId===a.id?A1:'transparent',btnLabel:a.status==='Awaiting decision'?'Review':'View',
+        onOpen:()=>this.setState({reviewId:a.id})})),
+      rv:(()=>{const a=APPS.find(x=>x.id===st.reviewId);if(!a)return {open:false,facts:[],docs:[]};
+        const decided=a.status==='Accepted'||a.status==='Rejected';
+        return {open:true,name:a.name,id:a.id,programme:a.programme,status:a.status,initials:a.name.split(' ').map(p=>p[0]).slice(0,2).join(''),
+          cls:a.status==='Accepted'?'tag-accent':a.status==='Rejected'?'tag-outline':'tag-outline',
+          facts:[{k:'Programme',v:a.programme},{k:'Entry',v:a.entry},{k:'Submitted',v:a.submitted},{k:'Grades',v:a.grades},{k:'School or college',v:a.school},{k:'Application route',v:'Direct — applicant portal'}],
+          statement:a.statement,
+          docs:[{name:'Application form',status:'Verified',cls:'tag-neutral'},{name:'Photo ID',status:'Verified',cls:'tag-neutral'},{name:'Final transcript',status:a.grades==='Awaiting transcript'?'Outstanding':'Verified',cls:a.grades==='Awaiting transcript'?'tag-accent':'tag-neutral'}],
+          decided,decisionTitle:a.status==='Accepted'?'Accepted — offer issued':a.status==='Rejected'?'Rejected — applicant notified':'',
+          decisionNote:a.status==='Accepted'?'The applicant sees this in their portal immediately and has until 20 August to reply.':'Feedback was sent with the decision. The record stays open for a January application.',
+          slaNote:decided?'Decision recorded in the audit trail.':'Ten working days from complete application to decision.',
+          onClose:()=>this.setState({reviewId:null}),
+          onAccept:()=>{a.status='Accepted';this.forceUpdate();},
+          onReject:()=>{a.status='Rejected';this.forceUpdate();}};})(),
       // assistant
       chatOpen:st.chatOpen, chatBtnLabel:st.chatOpen?'Assistant':'Need help?', chatInput:st.chatInput,
       toggleChat:()=>this.setState({chatOpen:!st.chatOpen}),
